@@ -19,52 +19,44 @@ I am running this in a Debian 11 LXC container on Proxmox 7.2, however, these st
     tar -xf mc-router.tar.gz -C mc-router
     ```
 
-2.  Create 2 files: 
-
-    -   An environment file `/etc/vanilla`
+2.  Create an environment file `/etc/mcrouuter`
     
-        ```ini
-        MAPPING="vanilla.domain.com=192.168.1.25:25565"
-        ```
+    ```ini
+    MAPPING="vanilla.domain.com=192.168.1.25:25565,forge.domain.com=192.168.1.26:25565"
+    ```
+    Each entry is comma separated
+    
+3.  Create a systemd service file: `/etc/systemd/system/mc-router.service`
 
-    -   And a systemd service file: `/etc/systemd/system/mc-router@.service`
+    ```ini
+    [Unit]
+    Description=Minecraft proxy service
+    After=network.target
+    StartLimitIntervalSec=0
 
-        > The `@` in the filename may look weird, but it is necessary.
+    [Service]
+    Type=simple
+    Restart=on-failure
+    RestartSec=5s
+    EnvironmentFile=/etc/mcrouter
+    ExecStart=/path/to/file/mc-router MAPPING
 
-        ```ini
-        [Unit]
-        Description=Minecraft proxy service (%i)
-        After=network.target
-        StartLimitIntervalSec=0
-
-        [Service]
-        Type=simple
-        Restart=on-failure
-        RestartSec=5s
-        EnvironmentFile=/etc/%i
-        ExecStart=/path/to/file/mc-router MAPPING
-
-        [Install]
-        WantedBy=multi-user.target
-        ```
-
-        The `%i` references the filename that we call after the `@`.
+    [Install]
+    WantedBy=multi-user.target
+    ```
      
 
-3.  Start the Service.
-
-    The `@` in the file name is used to dynamically reference different servers and domains. In this case we made a file `vanilla` so we will use that
-    
+4.  Start the Service.
     
     ```
-    systemctl start mc-router@vanilla
+    systemctl start mc-router
     ```
 
     Enable it so that it runs at startup:
 
     ```
-    systemctl enable mc-router@vanilla
+    systemctl enable mc-router
     ```
 
-You can do this with different environment files for different servers: vanilla, feed-the-beast, bucket, paper, etc.  
-All you'll need to do is make a new environment file and use it in the name of the service
+You can do this for different servers: vanilla, feed-the-beast, bucket, paper, etc.  
+All you need to do is add to the environment file and reload the service.

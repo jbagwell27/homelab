@@ -1,5 +1,4 @@
 <style>
-/* For styling the rendered Markdown */
 .callout {
   border-inline-start: 5px solid #bbb;
   background-color: #eee;
@@ -22,7 +21,7 @@
   /* top: 50%; */
   margin-top: 0px;
   display: inline-block;
-  position: absolute;
+  posit7ion: absolute;
   line-height: 1;
   opacity: .8
 }

@@ -144,5 +144,9 @@ img {
 
 - The server should run successfully.
 
-<p class="callout info">To install mods, manually download them to the <code>mods</code> folder.</p> 
+{% note %}
+
+**Note:** To install mods, manually download them to the <code>mods</code> folder
+
+{% endnote %}
 
